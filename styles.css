@@ -1,0 +1,138 @@
+/* Estilos generales para Alke Wallet */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+/* Estilos para cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Navbar personalizada */
+.navbar-alke {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+}
+
+.navbar-alke .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Botones personalizados */
+.btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-success {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+/* Iconos */
+.bi {
+    vertical-align: middle;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+
+/* Formularios */
+.form-control {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+}
+
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+/* Tablas */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Saldo */
+.balance-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .balance-display {
+        font-size: 2rem;
+    }
+    
+    .card {
+        margin: 1rem;
+    }
+}
+
+/* Animaciones */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Transacciones */
+.transaction-item {
+    border-left: 4px solid transparent;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+}
+
+.transaction-item.income {
+    border-left-color: var(--accent-color);
+}
+
+.transaction-item.expense {
+    border-left-color: var(--danger-color);
+}
+
+.transaction-item:hover {
+    background-color: rgba(0,0,0,0.02);
+}
