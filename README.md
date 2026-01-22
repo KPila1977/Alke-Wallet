@@ -65,7 +65,7 @@ Saldo inicial: $250.000 CLP
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tuusuario/alke-wallet.git
+   git clone https://github.com/KPila1977/Alke-Wallet.git
    cd alke-wallet
 Abrir en el navegador
 
@@ -84,18 +84,17 @@ Saldo inicial: $250.000 CLP
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tuusuario/alke-wallet.git
+   git clone https://github.com/KPila1977/Alke-Wallet.gitO utiliza un servidor local (recomendado para desarrollo)https://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.gitO utiliza un servidor local (recomendado para desarrollo)https://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.git
    cd alke-wallet
 Abrir en el navegador
 Abre el archivo index.html en tu navegador
-O utiliza un servidor local (recomendado para desarrollo)
 Usar datos de demostración
 Usuario: demo
 Contraseña: demo123
 Saldo inicial: $250.000 CLP 
 
 
-# Alke Wallet - Billetera Digital en Pesos Chilenos
+# Alke Wallet - Billetera Digital en Pesos Chilenoshttps://github.com/tuusuario/alke-wallet.git
 
 ## 📋 Descripción del Proyecto
 
