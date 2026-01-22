@@ -12,49 +12,47 @@
 - Git (opcional, para control de versiones)
 
 ### Pasos de Instalación
-
+https://github.com/tuusuario/alke-wallet.git
 1. **Clonar el repositorio**
    ```bashhttps://github.com/tuusuario/alke-wallet.git
-   git clone https://github.com/KPila1977/Alke-Wallet.githttps://gihttps://github.com/tuusuario/alke-wallet.gitthub.com/tuusuario/alke-wallet.git
-   cd alke-wallet
-Abrir en el navegador
-
-Abre el archivo index.html en tu navegador
-
-O utiliza un servidor local (recomendado para desarrollo)https://github.com/tuusuario/alke-wallet.git
-
-Usar datos de demostración
-
-Usuario: demohttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
-
-Contraseña: demo123
-
-Saldo inicial: $250.000 CLP
-https://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.git
-### Requisitos Previos
-- Navegador web moderno (Chrome, Firefox, Edge, Safari)
-- Editor de código (opcional, para desarrollo)
-- Git (opcional, para control de versiones)
-
-### Pasos de Instalación
-
-1. **Clonar el repositorio**
-   ```bash
    git clone https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
    cd alke-wallet
 Abrir en el navegador
 
 Abre el archivo index.html en tu navegador
 
-O utiliza un servidor local (recomendado para desarrollo)
-
 Usar datos de demostración
 
+Usuario: demohttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
+
+Contraseña: demo123
+
+Saldo inicial: $250.000 CLP
+https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
+### Requisitos Previoshttps://github.com/tuusuario/alke-wallet.git
+- Navegador web moderno (Chrome, Firefox, Edge, Safari)
+- Editor de código (opcional, para desarrollo)
+- Git (opcional, para control de versiones)
+
+### Pasos de InstalaciónO utiliza un servidor local (recomendado para desarrollo)https://github.com/tuusuario/alke-wallet.git
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
+   cd alke-wallethttps://github.com/tuusuario/alke-wallet.git
+Abrir en el navegador
+
+Abre el archivo index.html en tu navegador
+
+O utiliza un servidor local (recomendado para desarrollo)
+https://github.com/tuusuario/alke-wallet.git
+Usar datos de demostración
+https://github.com/tuusuario/alke-wallet.git
 Usuario: demo
 https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
 Contraseña: demo123https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
 
-Saldo inicial: $250.000 CLP
+Saldo inicial: $250.000 CLPhttps://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.git
 
 ### Requisitos Previos
 - Navegador web moderno (Chrome, Firefox, Edge, Safari)
@@ -62,14 +60,14 @@ Saldo inicial: $250.000 CLP
 - Git (opcional, para control de versiones)
 
 ### Pasos de Instalación
-https://github.com/KPila1977/Alke-Wallet.git
+https://github.com/KPila1977/Alke-Wallet.githttps://github.com/tuusuario/alke-wallet.git
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/KPila1977/Alke-Wallet.git
    cd alke-wallet
 Abrir en el navegador README.md
 
-Abre el archivo index.html en tu navegador
+Abre el archivo index.html en tu navegadorhttps://github.com/tuusuario/alke-wallet.git
 
 O utiliza un servidor local (recomendado para desarrollo)
 
@@ -79,36 +77,36 @@ Usuario: demo
 
 Contraseña: demo123
 
-Saldo inicial: $250.000 CLP
+Saldo inicial: $250.000 CLPhttps://github.com/tuusuario/alke-wallet.git
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**https://github.com/KPila1977/Alke-Wallet.git
-   ```bash
-   git clone https://github.com/KPila1977/Alke-Wallet.gitO utiliza un servidor local (recomendado para desarrollo)https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.gitO utiliza un servidor local (recomendado para desarrollo)hhttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
+   ```bashhttps://github.com/tuusuario/alke-wallet.git
+   git clone https://github.com/KPila1977/Alke-Wallet.gitO utiliza un servidor local (recomendado para desarrollo)https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.gitO utiliza un servidor local (recomendado para desarhttps://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.gitrollo)hhttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
    cd alke-wallet
 Abrir en el navegador
 Abre el archivo index.html en tu navegador
-Usar datos de demostración
+Usar datos de demostraciónhttps://github.com/tuusuario/alke-wallet.git
 Usuario: demohttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
 Contraseña: demo123
 Saldo inicial: $250.000 CLP 
 https://github.com/KPila1977/Alke-Wallet.git
-
+https://github.com/tuusuario/alke-wallet.git
 # Alke Wallet - Billetera Digital en Pesos Chilenos https://github.com/KPila1977/Alke-Wallet.git
 
 ## 📋 Descripción del Proyecto
 
 Alke Wallet es una aplicación de billetera digital desarrollada como parte de la Evaluación del Módulo 2 de Alkemy. Permite a los usuarios gestionar sus activos financieros en pesos chilenos (CLP) de manera segura y conveniente.
 https://github.com/KPila1977/Alke-Wallet.git
-## 🎯 Características Principaleshttps://github.com/KPila1977/Alke-Wallet.git
+## 🎯 Características Principaleshttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/tuusuario/alke-wallet.git
 
 
 ### 🔐 Autenticación
-- Registro de nuevos usuarios
+- Registro de nuevos usuarioshttps://github.com/tuusuario/alke-wallet.git
 - Inicio de sesión seguro
 - Datos de demostración preconfigurados
 ## 13. Instrucciones para Ejecutarhttps://github.com/KPila1977/Alke-Wallet.git
-Para ejecutar correctamente la aplicación Alke Wallet:
+Para ejecutar correctamente la aplicación Alke Wallet:https://github.com/tuusuario/alke-wallet.git
 https://github.com/KPila1977/Alke-Wallet.git
 1. **Crea la estructura de carpetas:**
 ### 💰 Gestión de Fondos
@@ -119,15 +117,15 @@ et.git
 - Historial completo de transacciones
 https://github.com/KPila1977/Alke-Wallet.git
 ### 👥 Gestión de Contactos## 13. Instrucciones para Ejecutar
-
+https://github.com/tuusuario/alke-wallet.git
 Para ejecutar correctamente la aplicación Alke Wallet:
 https://github.com/KPila1977/Alke-Wallet.git
 1. **Crea la estructura de carpetas:**## 13. Instrucciones para Ejecutarhttps://github.com/KPila1977/Alke-Wallet.git
-
+https://github.com/tuusuario/alke-wallet.git
 Para ejecutar correctamente la aplicación Alke Wallet:
 
 1. **Crea la estructura de carpetas:**
-- Agregar y eliminar contactoshttps://github.com/KPila1977/Alke-Wallet.git
+- Agregar y eliminar contactoshttps://github.com/KPila1977/Alke-Wallet.githttps://github.com/tuusuario/alke-wallet.git
 - Transferencias rápidas a contactos frecuentes
 - Autocompletado en formularioshttps://github.com/KPila1977/Alke-Wallet.git
 
@@ -136,34 +134,34 @@ Para ejecutar correctamente la aplicación Alke Wallet:
 - Resumen mensual
 - Filtrado avanzado de transacciones
 - Exportación a CSV
-
+https://github.com/tuusuario/alke-wallet.git
 ## 🛠️ Tecnologías Utilizadas## 13. Instrucciones para Ejecutar
 
 Para ejecutar correctamente la aplicación Alke Wallet:
 
 1. **Crea la estructura de carpetas:**
-
+https://github.com/tuusuario/alke-wallet.git
 ### Frontend
 - **HTML5**: Estructura semántica
 - **CSS3**: Estilos personalizados y responsive design
 - **JavaScript (ES6+)**: Lógica de la aplicación
 - **Bootstrap 5**: Framework CSS para diseño responsivo
 - **jQuery**: Manipulación del DOM y AJAX
-- **Chart.js**: Gráficos interactivos
+- **Chart.js**: Gráficos interactivoshttps://github.com/tuusuario/alke-wallet.git
 
 ### Herramientas de Desarrollo
 - **Git**: Control de versiones
 - **GitHub**: Repositorio remoto
 - **Visual Studio Code**: Editor de código
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Proyectohttps://github.com/tuusuario/alke-wallet.githttps://github.com/tuusuario/alke-wallet.git
 alke-wallet/ 
 ├── index.html # Página principal https://github.com/KPila1977/Alke-Wallet.githttps://github.com/KPila1977/Alke-Wallet.git
 ├── css/ 
 │ ├── styles.css # Estilos personalizados 
 │ └── bootstrap-custom.css # Personalizaciones de Bootstrap 
 ├── js/ 
-│ ├── app.js # Lógica principal de la aplicación 
+│ ├── app.js # Lógica principal de la aplicación https://github.com/tuusuario/alke-wallet.git
 │ ├── auth.js # Manejo de autenticación 
 │ ├── transactions.js # Gestión de transacciones 
 │ └── utils.js # Utilidades generales 
