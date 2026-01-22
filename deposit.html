@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depositar - Alke Wallet</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        .deposit-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-option {
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .amount-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .amount-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.1);
+            font-weight: bold;
+        }
+        
+        .deposit-method {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .deposit-method:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .deposit-method.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .deposit-animation {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="menu.html">
+                <i class="bi bi-arrow-left me-2"></i>
+                <i class="bi bi-wallet2 me-2"></i>
+                Alke Wallet
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span id="current-user">Usuario</span>
+                </span>
+                <a href="menu.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house-door"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="deposit-container">
+            <!-- Alerta -->
+            <div id="alert-container"></div>
+            
+            <!-- Tarjeta de Información -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Depositar Dinero
+                    </h3>
+                    
+                    <div class="text-center mb-4">
+                        <div class="balance-display" id="current-balance">$0</div>
+                        <small class="text-muted">Saldo actual en pesos chilenos</small>
+                    </div>
+                    
+                    <p class="text-center mb-4">
+                        Selecciona el monto y método de depósito para agregar fondos a tu cuenta.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Formulario de Depósito -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-body">
+                    <form id="deposit-form">
+                        <!-- Monto -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Monto a depositar (CLP)</label>
+                            
+                            <div class="amount-options">
+                                <div class="amount-option" data-amount="10000">
+                                    $10.000
+                                </div>
+                                <div class="amount-option" data-amount="25000">
+                                    $25.000
+                                </div>
+                                <div class="amount-option" data-amount="50000">
+                                    $50.000
+                                </div>
+                                <div class="amount-option" data-amount="100000">
+                                    $100.000
+                                </div>
+                                <div class="amount-option" data-amount="200000">
+                                    $200.000
+                                </div>
+                                <div class="amount-option" data-amount="500000">
+                                    $500.000
+                                </div>
+                            </div>
+                            
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">$</span>
+                                <input type="text" 
+                                       class="form-control currency-input" 
+                                       id="deposit-amount" 
+                                       placeholder="Ingresa otro monto"
+                                       required>
+                                <span class="input-group-text">CLP</span>
+                            </div>
+                            <div class="form-text">
+                                El depósito mínimo es de $1.000 y máximo de $1.000.000 por operación.
+                            </div>
+                        </div>
+                        
+                        <!-- Método de Pago -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Método de depósito</label>
+                            
+                            <div class="deposit-method" data-method="transfer">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-bank display-6 text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Transferencia Bancaria</h6>
+                                        <p class="small text-muted mb-0">
+                                            Transfiere desde tu cuenta bancaria. Procesamiento en 1-2 horas hábiles.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="deposit-method" data-method="card">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-credit-card display-6 text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Tarjeta de Crédito/Débito</h6>
+                                        <p class="small text-muted mb-0">
+                                            Depósito instantáneo con tu tarjeta. Comisión del 1.5%.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="deposit-method" value="transfer">
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="deposit-description" class="form-label fw-bold">
+                                Descripción (opcional)
+                            </label>
+                            <textarea class="form-control" 
+                                      id="deposit-description" 
+                                      rows="2" 
+                                      placeholder="Ej: Depósito para gastos del mes"></textarea>
+                        </div>
+                        
+                        <!-- Botón de Envío -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Confirmar Depósito
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Información de Depósito -->
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>Información Importante
+                    </h5>
+                    
+                    <div class="accordion" id="depositInfoAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    Límites de depósito
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <ul class="mb-0">
+                                        <li>Mínimo por operación: $1.000 CLP</li>
+                                        <li>Máximo por operación: $1.000.000 CLP</li>
+                                        <li>Máximo diario: $5.000.000 CLP</li>
+                                        <li>Máximo mensual: $20.000.000 CLP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    Comisiones
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul class="mb-0">
+                                        <li>Transferencia bancaria: Sin comisión</li>
+                                        <li>Tarjeta de débito: 1.5% del monto</li>
+                                        <li>Tarjeta de crédito: 2.5% del monto</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    Tiempos de procesamiento
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul class="mb-0">
+                                        <li>Transferencia bancaria: 1-2 horas hábiles</li>
+                                        <li>Tarjeta de débito/crédito: Instantáneo</li>
+                                        <li>Efectivo en puntos autorizados: Inmediato</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Animación de depósito -->
+            <div class="deposit-animation" id="deposit-animation">
+                <div class="loader"></div>
+                <h4>Procesando depósito...</h4>
+                <p class="text-muted">Por favor, espera unos momentos.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/transactions.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Cargar datos del usuario
+            const user = getCurrentUser();
+            if (user) {
+                $('#current-user').text(user.name);
+                $('#current-balance').text(formatCurrency(user.balance));
+            }
+            
+            // Configurar opciones de monto
+            $('.amount-option').click(function() {
+                $('.amount-option').removeClass('selected');
+                $(this).addClass('selected');
+                const amount = $(this).data('amount');
+                $('#deposit-amount').val(amount.toLocaleString('es-CL'));
+            });
+            
+            // Configurar métodos de depósito
+            $('.deposit-method').click(function() {
+                $('.deposit-method').removeClass('selected');
+                $(this).addClass('selected');
+                const method = $(this).data('method');
+                $('#deposit-method').val(method);
+            });
+            
+            // Seleccionar primera opción por defecto
+            $('.amount-option:first').click();
+            $('.deposit-method:first').click();
+            
+            // Manejar entrada de monto personalizado
+            $('#deposit-amount').on('input', function() {
+                $('.amount-option').removeClass('selected');
+                
+                // Validar monto máximo
+                const value = parseInt($(this).val().replace(/[^\d]/g, '') || '0');
+                if (value > 1000000) {
+                    $(this).val('1000000');
+                    showAlert('El monto máximo por operación es de $1.000.000', 'warning');
+                }
+            });
+            
+            // Manejar envío del formulario
+            $('#deposit-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                const amountInput = $('#deposit-amount').val();
+                const amount = parseInt(amountInput.replace(/[^\d]/g, '') || '0');
+                const description = $('#deposit-description').val();
+                const method = $('#deposit-method').val();
+                
+                // Validaciones
+                if (amount < 1000) {
+                    showAlert('El monto mínimo de depósito es de $1.000', 'danger');
+                    return;
+                }
+                
+                if (amount > 1000000) {
+                    showAlert('El monto máximo por operación es de $1.000.000', 'danger');
+                    return;
+                }
+                
+                // Calcular comisión si es tarjeta
+                let finalAmount = amount;
+                let commission = 0;
+                
+                if (method === 'card') {
+                    commission = amount * 0.015; // 1.5%
+                    finalAmount = amount - commission;
+                    
+                    if (!confirm(`Comisión por tarjeta: ${formatCurrency(commission)}\n\n¿Deseas continuar?`)) {
+                        return;
+                    }
+                }
+                
+                // Mostrar animación
+                $(this).hide();
+                $('#deposit-animation').show();
+                
+                // Simular procesamiento
+                setTimeout(() => {
+                    const result = makeDeposit(finalAmount, description);
+                    
+                    if (result.success) {
+                        // Mostrar mensaje de éxito
+                        $('#deposit-animation').html(`
+                            <i class="bi bi-check-circle display-1 text-success mb-3"></i>
+                            <h4>¡Depósito Exitoso!</h4>
+                            <p>${formatCurrency(finalAmount)} han sido depositados en tu cuenta.</p>
+                            ${commission > 0 ? `<p class="text-muted">Comisión: ${formatCurrency(commission)}</p>` : ''}
+                            <p class="text-muted">Nuevo saldo: ${formatCurrency(result.newBalance)}</p>
+                            <div class="mt-4">
+                                <a href="menu.html" class="btn btn-primary me-2">Volver al Menú</a>
+                                <button class="btn btn-outline-primary" onclick="location.reload()">Nuevo Depósito</button>
+                            </div>
+                        `);
+                    } else {
+                        // Mostrar mensaje de error
+                        $('#deposit-animation').html(`
+                            <i class="bi bi-x-circle display-1 text-danger mb-3"></i>
+                            <h4>Error en el Depósito</h4>
+                            <p>${result.message}</p>
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+                            </div>
+                        `);
+                    }
+                }, 2000); // Simular 2 segundos de procesamiento
+            });
+        });
+        
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertClass = {
+                'success': 'alert-success',
+                'danger': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            };
+            
+            const alertHtml = `
+                <div class="alert ${alertClass[type]} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#alert-container').html(alertHtml);
+            
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+        
+        // Volver al menú
+        function goToMenu() {
+            window.location.href = 'menu.html';
+        }
+    </script>
+</body>
+</html>

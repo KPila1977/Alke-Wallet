@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Alke Wallet</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        .dashboard-card {
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quick-actions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            padding: 2rem;
+        }
+        
+        .recent-transactions {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .transaction-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 10px 0;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-wallet2 me-2"></i>
+                Alke Wallet
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span id="user-name">Usuario</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Columna izquierda: Balance y Acciones Rápidas -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <!-- Tarjeta de Balance -->
+                <div class="card shadow border-0">
+                    <div class="card-body text-center">
+                        <div class="user-avatar mx-auto mb-3" id="user-avatar">JD</div>
+                        <h5 id="current-user">Juan Demo</h5>
+                        <p class="text-muted mb-4">Bienvenido a tu billetera digital</p>
+                        
+                        <div class="balance-container mb-4">
+                            <p class="text-muted mb-1">Saldo disponible</p>
+                            <h2 class="text-primary" id="current-balance">$0</h2>
+                            <small class="text-muted">Pesos chilenos (CLP)</small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-outline-primary w-100 mb-2" onclick="window.location.href='deposit.html'">
+                                    <i class="bi bi-plus-circle"></i> Depositar
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-success w-100 mb-2" onclick="window.location.href='sendmoney.html'">
+                                    <i class="bi bi-send"></i> Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acciones Rápidas -->
+                <div class="quick-actions shadow mt-4">
+                    <h5 class="mb-3"><i class="bi bi-lightning me-2"></i>Acciones Rápidas</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button class="btn btn-light w-100" onclick="window.location.href='sendmoney.html'">
+                                <i class="bi bi-arrow-up-circle text-primary"></i>
+                                <small>Transferir</small>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-light w-100" onclick="window.location.href='deposit.html'">
+                                <i class="bi bi-plus-circle text-success"></i>
+                                <small>Depositar</small>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-light w-100" onclick="window.location.href='transactions.html'">
+                                <i class="bi bi-clock-history text-info"></i>
+                                <small>Historial</small>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-light w-100" id="qr-code-btn">
+                                <i class="bi bi-qr-code text-warning"></i>
+                                <small>QR</small>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna central: Tarjetas de Funcionalidades -->
+            <div class="col-lg-5 col-md-6 mb-4">
+                <h4 class="mb-3">¿Qué deseas hacer?</h4>
+                
+                <div class="row g-3">
+                    <!-- Tarjeta 1: Enviar Dinero -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-primary text-white" 
+                             onclick="window.location.href='sendmoney.html'">
+                            <div class="card-body text-center">
+                                <i class="bi bi-send card-icon"></i>
+                                <h5>Enviar Dinero</h5>
+                                <p class="small">Transfiere a contactos o cuentas nuevas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 2: Depositar -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-success text-white"
+                             onclick="window.location.href='deposit.html'">
+                            <div class="card-body text-center">
+                                <i class="bi bi-plus-circle card-icon"></i>
+                                <h5>Depositar</h5>
+                                <p class="small">Añade dinero a tu cuenta</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 3: Historial -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-info text-white"
+                             onclick="window.location.href='transactions.html'">
+                            <div class="card-body text-center">
+                                <i class="bi bi-clock-history card-icon"></i>
+                                <h5>Historial</h5>
+                                <p class="small">Revisa tus transacciones</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 4: Contactos -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-warning text-white"
+                             onclick="showContacts()">
+                            <div class="card-body text-center">
+                                <i class="bi bi-people card-icon"></i>
+                                <h5>Contactos</h5>
+                                <p class="small">Gestiona tus contactos frecuentes</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 5: Tarjetas -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-secondary text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-credit-card card-icon"></i>
+                                <h5>Tarjetas</h5>
+                                <p class="small">Administra tus métodos de pago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 6: Configuración -->
+                    <div class="col-md-6">
+                        <div class="card dashboard-card border-0 bg-dark text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-gear card-icon"></i>
+                                <h5>Configuración</h5>
+                                <p class="small">Ajusta tu cuenta y preferencias</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna derecha: Transacciones Recientes -->
+            <div class="col-lg-3 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-clock-history me-2"></i>Transacciones Recientes
+                        </h5>
+                        
+                        <div class="recent-transactions" id="recent-transactions">
+                            <!-- Las transacciones se cargarán aquí -->
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="transactions.html" class="btn btn-outline-primary btn-sm">
+                                Ver todo el historial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información Adicional -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Información Importante
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="alert alert-light">
+                                    <h6><i class="bi bi-shield-check text-primary me-2"></i>Seguridad</h6>
+                                    <p class="small mb-0">Tus fondos están protegidos con encriptación de 256-bit.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-light">
+                                    <h6><i class="bi bi-clock text-success me-2"></i>Disponibilidad</h6>
+                                    <p class="small mb-0">Operativo las 24 horas, todos los días del año.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-light">
+                                    <h6><i class="bi bi-telephone text-info me-2"></i>Soporte</h6>
+                                    <p class="small mb-0">Soporte técnico disponible en +56 2 1234 5678.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Contactos -->
+    <div class="modal fade" id="contacts-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mis Contactos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="contacts-list">
+                        <!-- Los contactos se cargarán aquí -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="addNewContact()">Agregar Contacto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal QR Code -->
+    <div class="modal fade" id="qr-modal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mi Código QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="qr-code" class="mb-3">
+                        <!-- QR Code se generará aquí -->
+                        <div class="bg-light p-4 rounded d-inline-block">
+                            <div class="qr-placeholder" style="width: 150px; height: 150px; background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%), linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%); background-size: 20px 20px; background-position: 0 0, 10px 10px;"></div>
+                        </div>
+                    </div>
+                    <p class="small text-muted">Escanea este código para recibir pagos</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" onclick="shareQR()">Compartir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    
+    <script>
+        // Cargar datos al iniciar
+        $(document).ready(function() {
+            loadUserData();
+            loadRecentTransactions();
+            
+            // Configurar botón QR
+            $('#qr-code-btn').click(function() {
+                $('#qr-modal').modal('show');
+            });
+        });
+        
+        // Cargar transacciones recientes
+        function loadRecentTransactions() {
+            const transactions = getUserTransactions();
+            const container = $('#recent-transactions');
+            
+            if (!transactions || transactions.length === 0) {
+                container.html(`
+                    <div class="text-center py-4">
+                        <i class="bi bi-clock-history display-4 text-muted"></i>
+                        <p class="mt-2 text-muted">No hay transacciones recientes</p>
+                    </div>
+                `);
+                return;
+            }
+            
+            // Ordenar por fecha (más recientes primero) y tomar las primeras 5
+            const recent = transactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            let html = '';
+            recent.forEach(transaction => {
+                const typeIcon = transaction.type === 'deposit' ? 
+                    '<i class="bi bi-arrow-down-circle text-success"></i>' : 
+                    '<i class="bi bi-arrow-up-circle text-danger"></i>';
+                
+                const amountClass = transaction.type === 'deposit' ? 'text-success' : 'text-danger';
+                const amountSign = transaction.type === 'deposit' ? '+' : '-';
+                
+                // Formatear fecha relativa
+                const date = new Date(transaction.date);
+                const now = new Date();
+                const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+                
+                let timeAgo;
+                if (diffHours < 1) {
+                    timeAgo = 'Hace unos minutos';
+                } else if (diffHours < 24) {
+                    timeAgo = `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+                } else {
+                    timeAgo = date.toLocaleDateString('es-CL');
+                }
+                
+                html += `
+                    <div class="transaction-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                ${typeIcon}
+                                <span class="ms-2">${transaction.description}</span>
+                            </div>
+                            <div class="text-end">
+                                <div class="${amountClass} fw-bold">
+                                    ${amountSign}${formatCurrency(transaction.amount)}
+                                </div>
+                                <small class="text-muted">${timeAgo}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+        }
+        
+        // Mostrar contactos
+        function showContacts() {
+            const contacts = getUserContacts();
+            const container = $('#contacts-list');
+            
+            if (!contacts || contacts.length === 0) {
+                container.html(`
+                    <div class="text-center py-4">
+                        <i class="bi bi-people display-4 text-muted"></i>
+                        <p class="mt-2 text-muted">No tienes contactos guardados</p>
+                    </div>
+                `);
+            } else {
+                let html = '<div class="list-group">';
+                contacts.forEach(contact => {
+                    html += `
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">${contact.name}</h6>
+                                <small class="text-muted">${contact.accountNumber}</small>
+                            </div>
+                            <p class="mb-1 small">${contact.email}</p>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="transferToContact('${contact.accountNumber}')">
+                                    <i class="bi bi-send"></i> Transferir
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.html(html);
+            }
+            
+            $('#contacts-modal').modal('show');
+        }
+        
+        // Transferir a contacto
+        function transferToContact(accountNumber) {
+            $('#contacts-modal').modal('hide');
+            window.location.href = `sendmoney.html?contact=${accountNumber}`;
+        }
+        
+        // Agregar nuevo contacto
+        function addNewContact() {
+            $('#contacts-modal').modal('hide');
+            
+            // Aquí podrías redirigir a una página de agregar contacto
+            // o mostrar un formulario en un modal
+            alert('Función de agregar contacto será implementada próximamente');
+        }
+        
+        // Compartir QR
+        function shareQR() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi código QR - Alke Wallet',
+                    text: 'Escanea este código para enviarme dinero',
+                    url: window.location.href
+                });
+            } else {
+                alert('Código QR listo para compartir');
+            }
+        }
+        
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

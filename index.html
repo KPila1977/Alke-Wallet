@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alke Wallet - Tu Billetera Digital</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 bg-primary text-white p-0 sidebar">
+                <div class="sidebar-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <img src="https://via.placeholder.com/80x80/0d6efd/ffffff?text=AW" 
+                             alt="Alke Wallet Logo" 
+                             class="rounded-circle mb-2">
+                        <h4>Alke Wallet</h4>
+                        <p class="text-light">Tu billetera digital en pesos chilenos</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="pages/login.html">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="pages/menu.html">
+                                <i class="bi bi-house-door me-2"></i>
+                                Menú Principal
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="pages/deposit.html">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                Depositar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="pages/sendmoney.html">
+                                <i class="bi bi-send me-2"></i>
+                                Enviar Dinero
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="pages/transactions.html">
+                                <i class="bi bi-clock-history me-2"></i>
+                                Historial
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-5 px-3">
+                        <div class="card bg-dark text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Saldo Disponible</h6>
+                                <h3 class="card-text" id="main-balance">$0</h3>
+                                <small class="text-light">Pesos chilenos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido Principal -->
+            <div class="col-md-9 col-lg-10 p-0 main-content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+                    <div class="container-fluid">
+                        <span class="navbar-brand">Alke Wallet</span>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">Usuario: <strong id="current-user">Invitado</strong></span>
+                            <button class="btn btn-outline-primary btn-sm" onclick="logout()">
+                                <i class="bi bi-box-arrow-right"></i> Salir
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+                
+                <main class="p-4">
+                    <div class="jumbotron bg-light p-5 rounded">
+                        <h1 class="display-4">¡Bienvenido a Alke Wallet!</h1>
+                        <p class="lead">Tu solución digital para gestionar tus pesos chilenos de manera segura y conveniente.</p>
+                        <hr class="my-4">
+                        <p>Una billetera digital que te permite realizar transacciones, consultar tu saldo y administrar tus contactos fácilmente.</p>
+                        <a class="btn btn-primary btn-lg" href="pages/login.html" role="button">Comenzar</a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-shield-check text-primary display-4"></i>
+                                    <h5 class="card-title mt-3">Seguro</h5>
+                                    <p class="card-text">Tus transacciones protegidas con encriptación de última generación.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-lightning-charge text-primary display-4"></i>
+                                    <h5 class="card-title mt-3">Rápido</h5>
+                                    <p class="card-text">Transacciones instantáneas las 24 horas del día, los 7 días de la semana.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-coin text-primary display-4"></i>
+                                    <h5 class="card-title mt-3">En CLP</h5>
+                                    <p class="card-text">Opera en pesos chilenos sin complicaciones de conversión.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                
+                <footer class="bg-dark text-white text-center p-3">
+                    <p class="mb-0">Alke Wallet &copy; 2024 - Proyecto Alkemy | Pesos Chilenos (CLP)</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts Propios -->
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Inicializar saldo
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                document.getElementById('current-user').textContent = user;
+                updateBalanceDisplay();
+            }
+        });
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'pages/login.html';
+        }
+    </script>
+</body>
+</html>

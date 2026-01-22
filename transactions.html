@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - Alke Wallet</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    
+    <style>
+        .transactions-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filters-card {
+            background-color: #f8f9fa;
+        }
+        
+        .transaction-type-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .type-deposit {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+        
+        .type-withdrawal {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .type-transfer {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .status-failed {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .transaction-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .transaction-details.show {
+            max-height: 200px;
+        }
+        
+        #chart-container {
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="menu.html">
+                <i class="bi bi-arrow-left me-2"></i>
+                <i class="bi bi-wallet2 me-2"></i>
+                Alke Wallet
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span id="current-user">Usuario</span>
+                </span>
+                <a href="menu.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house-door"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4 transactions-container">
+        <!-- Alerta -->
+        <div id="alert-container"></div>
+        
+        <!-- Encabezado -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="mb-1">
+                    <i class="bi bi-clock-history text-primary me-2"></i>Historial de Transacciones
+                </h2>
+                <p class="text-muted">Revisa todas tus transacciones y gestiona tu actividad financiera.</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="card bg-primary text-white">
+                    <div class="card-body py-3">
+                        <h6 class="card-title mb-1">Saldo Actual</h6>
+                        <h4 class="card-text mb-0" id="current-balance">$0</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtros y Estadísticas -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card shadow border-0 filters-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-funnel me-2"></i>Filtrar Transacciones
+                        </h5>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Tipo de Transacción</label>
+                                <select class="form-select" id="filter-type">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="deposit">Depósitos</option>
+                                    <option value="withdrawal">Retiros</option>
+                                    <option value="transfer">Transferencias</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" id="filter-status">
+                                    <option value="">Todos los estados</option>
+                                    <option value="completed">Completadas</option>
+                                    <option value="pending">Pendientes</option>
+                                    <option value="failed">Fallidas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label">Período</label>
+                                <select class="form-select" id="filter-period">
+                                    <option value="all">Todo el período</option>
+                                    <option value="today">Hoy</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mes</option>
+                                    <option value="year">Este año</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha desde</label>
+                                <input type="date" class="form-control" id="filter-date-from">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha hasta</label>
+                                <input type="date" class="form-control" id="filter-date-to">
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <button class="btn btn-outline-primary" onclick="resetFilters()">
+                                            <i class="bi bi-arrow-clockwise me-1"></i>Restablecer
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary" onclick="applyFilters()">
+                                            <i class="bi bi-search me-1"></i>Aplicar Filtros
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-graph-up me-2"></i>Resumen Mensual
+                        </h5>
+                        
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="p-3 bg-success bg-opacity-10 rounded">
+                                    <i class="bi bi-arrow-down-circle fs-4 text-success"></i>
+                                    <h5 class="mt-2" id="monthly-income">$0</h5>
+                                    <small class="text-muted">Ingresos</small>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="p-3 bg-danger bg-opacity-10 rounded">
+                                    <i class="bi bi-arrow-up-circle fs-4 text-danger"></i>
+                                    <h5 class="mt-2" id="monthly-expenses">$0</h5>
+                                    <small class="text-muted">Egresos</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-primary bg-opacity-10 rounded">
+                                    <i class="bi bi-arrow-left-right fs-4 text-primary"></i>
+                                    <h5 class="mt-2" id="monthly-transactions">0</h5>
+                                    <small class="text-muted">Transacciones</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-info bg-opacity-10 rounded">
+                                    <i class="bi bi-cash-coin fs-4 text-info"></i>
+                                    <h5 class="mt-2" id="monthly-average">$0</h5>
+                                    <small class="text-muted">Promedio</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Transacciones -->
+        <div class="card shadow border-0 mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list-check me-2"></i>Todas las Transacciones
+                    </h5>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" onclick="exportToCSV()">
+                            <i class="bi bi-download me-1"></i>Exportar CSV
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="printTransactions()">
+                            <i class="bi bi-printer me-1"></i>Imprimir
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover" id="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Descripción</th>
+                                <th>Tipo</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las transacciones se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Paginación -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Mostrando <span id="showing-count">0</span> de <span id="total-count">0</span> transacciones
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0" id="pagination">
+                            <!-- La paginación se generará dinámicamente -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Transacciones -->
+        <div class="card shadow border-0">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-bar-chart me-2"></i>Análisis de Transacciones
+                </h5>
+                <div id="chart-container">
+                    <canvas id="transactions-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles de transacción -->
+    <div class="modal fade" id="transaction-detail-modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles de Transacción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="transaction-detail-content">
+                    <!-- Los detalles se cargarán dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadReceipt()">
+                        <i class="bi bi-receipt me-1"></i>Descargar Comprobante
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Scripts propios -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/transactions.js"></script>
+    
+    <script>
+        let transactionsChart = null;
+        let currentTransactions = [];
+        
+        $(document).ready(function() {
+            // Cargar datos del usuario
+            const user = getCurrentUser();
+            if (user) {
+                $('#current-user').text(user.name);
+                $('#current-balance').text(formatCurrency(user.balance));
+            }
+            
+            // Cargar transacciones
+            loadTransactions();
+            
+            // Configurar fecha por defecto
+            const today = new Date().toISOString().split('T')[0];
+            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2)
+                .toISOString().split('T')[0];
+            
+            $('#filter-date-to').val(today);
+            $('#filter-date-from').val(firstDayOfMonth);
+            
+            // Inicializar gráfico
+            initChart();
+            
+            // Aplicar filtros cuando cambien
+            $('#filter-type, #filter-status, #filter-period, #filter-date-from, #filter-date-to').on('change', function() {
+                applyFilters();
+            });
+        });
+        
+        // Cargar transacciones
+        function loadTransactions() {
+            const transactions = getUserTransactions();
+            currentTransactions = transactions;
+            
+            updateTransactionsTable(transactions);
+            updateMonthlySummary(transactions);
+            updateChart(transactions);
+        }
+        
+        // Actualizar tabla de transacciones
+        function updateTransactionsTable(transactions) {
+            const tbody = $('#transactions-table tbody');
+            tbody.empty();
+            
+            if (transactions.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-clock-history display-1 text-muted"></i>
+                            <h4 class="mt-3">No hay transacciones</h4>
+                            <p class="text-muted">No se encontraron transacciones con los filtros aplicados.</p>
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+            
+            // Ordenar por fecha (más recientes primero)
+            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            transactions.forEach(transaction => {
+                const date = new Date(transaction.date);
+                const formattedDate = date.toLocaleDateString('es-CL', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const typeText = transaction.type === 'deposit' ? 'Depósito' : 
+                               transaction.type === 'withdrawal' ? 'Retiro' : 'Transferencia';
+                const typeClass = transaction.type === 'deposit' ? 'type-deposit' : 
+                                transaction.type === 'withdrawal' ? 'type-withdrawal' : 'type-transfer';
+                
+                const statusText = transaction.status === 'completed' ? 'Completada' : 
+                                 transaction.status === 'pending' ? 'Pendiente' : 'Fallida';
+                const statusClass = transaction.status === 'completed' ? 'status-completed' : 
+                                  transaction.status === 'pending' ? 'status-pending' : 'status-failed';
+                
+                const amountClass = transaction.type === 'deposit' ? 'text-success' : 'text-danger';
+                const amountSign = transaction.type === 'deposit' ? '+' : '-';
+                
+                tbody.append(`
+                    <tr class="transaction-row" data-id="${transaction.id}">
+                        <td>${formattedDate}</td>
+                        <td>
+                            <div class="fw-medium">${transaction.description}</div>
+                            ${transaction.recipient ? 
+                                `<small class="text-muted">Para: ${transaction.recipient}</small>` : ''}
+                        </td>
+                        <td>
+                            <span class="transaction-type-badge ${typeClass}">
+                                ${typeText}
+                            </span>
+                        </td>
+                        <td class="${amountClass} fw-bold">
+                            ${amountSign}${formatCurrency(transaction.amount)}
+                        </td>
+                        <td>
+                            <span class="status-badge ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" 
+                                    onclick="showTransactionDetail('${transaction.id}')"
+                                    title="Ver detalles">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+            
+            // Actualizar contadores
+            $('#showing-count').text(transactions.length);
+            $('#total-count').text(transactions.length);
+        }
+        
+        // Actualizar resumen mensual
+        function updateMonthlySummary(transactions) {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthlyTransactions = transactions.filter(t => {
+                const date = new Date(t.date);
+                return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+            });
+            
+            let income = 0;
+            let expenses = 0;
+            
+            monthlyTransactions.forEach(t => {
+                if (t.type === 'deposit') {
+                    income += t.amount;
+                } else {
+                    expenses += t.amount;
+                }
+            });
+            
+            const average = monthlyTransactions.length > 0 ? 
+                ((income + expenses) / monthlyTransactions.length) : 0;
+            
+            $('#monthly-income').text(formatCurrency(income));
+            $('#monthly-expenses').text(formatCurrency(expenses));
+            $('#monthly-transactions').text(monthlyTransactions.length);
+            $('#monthly-average').text(formatCurrency(Math.round(average)));
+        }
+        
+        // Inicializar gráfico
+        function initChart() {
+            const ctx = document.getElementById('transactions-chart').getContext('2d');
+            transactionsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Ingresos',
+                        data: [],
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Egresos',
+                        data: [],
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Evolución de Transacciones (Últimos 7 días)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString('es-CL');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Actualizar gráfico
+        function updateChart(transactions) {
+            // Obtener últimos 7 días
+            const labels = [];
+            const incomeData = [];
+            const expenseData = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateString = date.toISOString().split('T')[0];
+                const label = date.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric' });
+                
+                labels.push(label);
+                
+                // Filtrar transacciones de este día
+                const dayTransactions = transactions.filter(t => {
+                    const tDate = new Date(t.date).toISOString().split('T')[0];
+                    return tDate === dateString;
+                });
+                
+                let dayIncome = 0;
+                let dayExpense = 0;
+                
+                dayTransactions.forEach(t => {
+                    if (t.type === 'deposit') {
+                        dayIncome += t.amount;
+                    } else {
+                        dayExpense += t.amount;
+                    }
+                });
+                
+                incomeData.push(dayIncome);
+                expenseData.push(dayExpense);
+            }
+            
+            // Actualizar gráfico
+            transactionsChart.data.labels = labels;
+            transactionsChart.data.datasets[0].data = incomeData;
+            transactionsChart.data.datasets[1].data = expenseData;
+            transactionsChart.update();
+        }
+        
+        // Aplicar filtros
+        function applyFilters() {
+            let filtered = getUserTransactions();
+            
+            // Filtrar por tipo
+            const typeFilter = $('#filter-type').val();
+            if (typeFilter) {
+                filtered = filtered.filter(t => t.type === typeFilter);
+            }
+            
+            // Filtrar por estado
+            const statusFilter = $('#filter-status').val();
+            if (statusFilter) {
+                filtered = filtered.filter(t => t.status === statusFilter);
+            }
+            
+            // Filtrar por período
+            const periodFilter = $('#filter-period').val();
+            if (periodFilter && periodFilter !== 'all') {
+                const now = new Date();
+                let startDate;
+                
+                switch(periodFilter) {
+                    case 'today':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        break;
+                    case 'week':
+                        startDate = new Date(now);
+                        startDate.setDate(now.getDate() - 7);
+                        break;
+                    case 'month':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                        break;
+                    case 'year':
+                        startDate = new Date(now.getFullYear(), 0, 1);
+                        break;
+                }
+                
+                filtered = filtered.filter(t => new Date(t.date) >= startDate);
+            }
+            
+            // Filtrar por fechas específicas
+            const dateFrom = $('#filter-date-from').val();
+            const dateTo = $('#filter-date-to').val();
+            
+            if (dateFrom) {
+                const fromDate = new Date(dateFrom);
+                filtered = filtered.filter(t => new Date(t.date) >= fromDate);
+            }
+            
+            if (dateTo) {
+                const toDate = new Date(dateTo);
+                toDate.setHours(23, 59, 59, 999);
+                filtered = filtered.filter(t => new Date(t.date) <= toDate);
+            }
+            
+            currentTransactions = filtered;
+            updateTransactionsTable(filtered);
+            updateChart(filtered);
+        }
+        
+        // Restablecer filtros
+        function resetFilters() {
+            $('#filter-type').val('');
+            $('#filter-status').val('');
+            $('#filter-period').val('all');
+            
+            const today = new Date().toISOString().split('T')[0];
+            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2)
+                .toISOString().split('T')[0];
+            
+            $('#filter-date-to').val(today);
+            $('#filter-date-from').val(firstDayOfMonth);
+            
+            applyFilters();
+        }
+        
+        // Mostrar detalles de transacción
+        function showTransactionDetail(transactionId) {
+            const transaction = currentTransactions.find(t => t.id == transactionId);
+            
+            if (!transaction) {
+                showAlert('Transacción no encontrada', 'danger');
+                return;
+            }
+            
+            const typeText = transaction.type === 'deposit' ? 'Depósito' : 
+                           transaction.type === 'withdrawal' ? 'Retiro' : 'Transferencia';
+            const typeClass = transaction.type === 'deposit' ? 'text-success' : 
+                            transaction.type === 'withdrawal' ? 'text-danger' : 'text-primary';
+            
+            const statusText = transaction.status === 'completed' ? 'Completada' : 
+                             transaction.status === 'pending' ? 'Pendiente' : 'Fallida';
+            const statusClass = transaction.status === 'completed' ? 'text-success' : 
+                              transaction.status === 'pending' ? 'text-warning' : 'text-danger';
+            
+            const date = new Date(transaction.date);
+            const formattedDate = date.toLocaleDateString('es-CL', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">ID de Transacción</h6>
+                        <p>${transaction.id}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Fecha y Hora</h6>
+                        <p>${formattedDate}</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Tipo</h6>
+                        <p class="${typeClass} fw-bold">${typeText}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Estado</h6>
+                        <p class="${statusClass} fw-bold">${statusText}</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6 class="text-muted">Descripción</h6>
+                        <p>${transaction.description}</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Monto</h6>
+                        <h3 class="${transaction.type === 'deposit' ? 'text-success' : 'text-danger'}">
+                            ${transaction.type === 'deposit' ? '+' : '-'}${formatCurrency(transaction.amount)}
+                        </h3>
+                    </div>
+                    ${transaction.recipient ? `
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Destinatario</h6>
+                        <p>${transaction.recipient}</p>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                ${transaction.status === 'pending' ? `
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-clock me-2"></i>
+                    Esta transacción está pendiente de procesamiento. Normalmente se completa en 1-2 horas hábiles.
+                </div>
+                ` : ''}
+                
+                ${transaction.status === 'failed' ? `
+                <div class="alert alert-danger mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Esta transacción ha fallado. Por favor, contacta al soporte técnico si necesitas asistencia.
+                </div>
+                ` : ''}
+            `;
+            
+            $('#transaction-detail-content').html(content);
+            $('#transaction-detail-modal').modal('show');
+        }
+        
+        // Exportar a CSV
+        function exportToCSV() {
+            if (currentTransactions.length === 0) {
+                showAlert('No hay transacciones para exportar', 'warning');
+                return;
+            }
+            
+            let csvContent = "Fecha,Descripción,Tipo,Monto,Estado,Destinatario\n";
+            
+            currentTransactions.forEach(transaction => {
+                const date = new Date(transaction.date);
+                const formattedDate = date.toLocaleDateString('es-CL', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const typeText = transaction.type === 'deposit' ? 'Depósito' : 
+                               transaction.type === 'withdrawal' ? 'Retiro' : 'Transferencia';
+                const statusText = transaction.status === 'completed' ? 'Completada' : 
+                                 transaction.status === 'pending' ? 'Pendiente' : 'Fallida';
+                
+                const amount = transaction.type === 'deposit' ? 
+                    `+${transaction.amount}` : `-${transaction.amount}`;
+                
+                const row = [
+                    `"${formattedDate}"`,
+                    `"${transaction.description}"`,
+                    `"${typeText}"`,
+                    amount,
+                    `"${statusText}"`,
+                    `"${transaction.recipient || ''}"`
+                ];
+                
+                csvContent += row.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const date = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute('download', `transacciones_alke_wallet_${date}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('Archivo CSV exportado exitosamente', 'success');
+        }
+        
+        // Imprimir transacciones
+        function printTransactions() {
+            const printContent = `
+                <html>
+                    <head>
+                        <title>Historial de Transacciones - Alke Wallet</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h1 { color: #0d6efd; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th { background-color: #0d6efd; color: white; padding: 10px; text-align: left; }
+                            td { padding: 8px; border-bottom: 1px solid #ddd; }
+                            .text-success { color: #198754; }
+                            .text-danger { color: #dc3545; }
+                            .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
+                            .footer { margin-top: 30px; font-size: 12px; color: #666; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div>
+                                <h1>Alke Wallet</h1>
+                                <p>Historial de Transacciones</p>
+                                <p>Fecha de generación: ${new Date().toLocaleDateString('es-CL')}</p>
+                            </div>
+                            <div>
+                                <p>Usuario: ${$('#current-user').text()}</p>
+                                <p>Saldo: ${$('#current-balance').text()}</p>
+                            </div>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Descripción</th>
+                                    <th>Tipo</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${currentTransactions.map(transaction => {
+                                    const date = new Date(transaction.date);
+                                    const formattedDate = date.toLocaleDateString('es-CL', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    });
+                                    
+                                    const typeText = transaction.type === 'deposit' ? 'Depósito' : 
+                                                   transaction.type === 'withdrawal' ? 'Retiro' : 'Transferencia';
+                                    
+                                    const statusText = transaction.status === 'completed' ? 'Completada' : 
+                                                     transaction.status === 'pending' ? 'Pendiente' : 'Fallida';
+                                    
+                                    const amountClass = transaction.type === 'deposit' ? 'text-success' : 'text-danger';
+                                    const amountSign = transaction.type === 'deposit' ? '+' : '-';
+                                    
+                                    return `
+                                        <tr>
+                                            <td>${formattedDate}</td>
+                                            <td>${transaction.description}</td>
+                                            <td>${typeText}</td>
+                                            <td class="${amountClass}">${amountSign}${formatCurrency(transaction.amount)}</td>
+                                            <td>${statusText}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                        
+                        <div class="footer">
+                            <p>Total de transacciones: ${currentTransactions.length}</p>
+                            <p>Documento generado por Alke Wallet - ${new Date().toLocaleString('es-CL')}</p>
+                        </div>
+                    </body>
+                </html>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Descargar comprobante
+        function downloadReceipt() {
+            showAlert('Funcionalidad de comprobante en desarrollo', 'info');
+        }
+        
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertClass = {
+                'success': 'alert-success',
+                'danger': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            };
+            
+            const alertHtml = `
+                <div class="alert ${alertClass[type]} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#alert-container').html(alertHtml);
+            
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

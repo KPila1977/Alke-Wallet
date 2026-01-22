@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Dinero - Alke Wallet</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        .transfer-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .contact-item {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .contact-item.selected {
+            background-color: rgba(13, 110, 253, 0.1);
+            border: 2px solid var(--primary-color);
+        }
+        
+        #receipt-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .receipt-container {
+            max-width: 400px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="menu.html">
+                <i class="bi bi-arrow-left me-2"></i>
+                <i class="bi bi-wallet2 me-2"></i>
+                Alke Wallet
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span id="current-user">Usuario</span>
+                </span>
+                <a href="menu.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house-door"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="transfer-container">
+            <!-- Alerta -->
+            <div id="alert-container"></div>
+            
+            <!-- Tarjeta de Información -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        <i class="bi bi-send text-primary me-2"></i>Enviar Dinero
+                    </h3>
+                    
+                    <div class="text-center mb-4">
+                        <div class="balance-display" id="current-balance">$0</div>
+                        <small class="text-muted">Saldo disponible para transferir</small>
+                    </div>
+                    
+                    <p class="text-center mb-4">
+                        Transfiere dinero a otros usuarios de Alke Wallet o a cuentas bancarias.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Formulario de Transferencia -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-body">
+                    <form id="transfer-form">
+                        <!-- Destinatario -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Destinatario</label>
+                            
+                            <!-- Selector de contactos -->
+                            <div class="mb-3">
+                                <label class="form-label">Seleccionar contacto</label>
+                                <select class="form-select" id="recipient-select">
+                                    <option value="">Seleccionar contacto...</option>
+                                    <!-- Los contactos se cargarán dinámicamente -->
+                                </select>
+                            </div>
+                            
+                            <!-- O ingresar manualmente -->
+                            <div class="mt-3">
+                                <label for="recipient-name" class="form-label">O ingresar manualmente</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="recipient-name" 
+                                       placeholder="Nombre del destinatario">
+                            </div>
+                            
+                            <div class="mt-3">
+                                <label for="recipient-account" class="form-label">Número de cuenta (opcional)</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="recipient-account" 
+                                       placeholder="Ej: 12345678">
+                            </div>
+                        </div>
+                        
+                        <!-- Monto -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Monto a transferir (CLP)</label>
+                            
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">$</span>
+                                <input type="text" 
+                                       class="form-control currency-input" 
+                                       id="transfer-amount" 
+                                       placeholder="Ingresa el monto"
+                                       required>
+                                <span class="input-group-text">CLP</span>
+                            </div>
+                            
+                            <div class="form-text">
+                                Límite por transferencia: $2.000.000 CLP
+                            </div>
+                            
+                            <!-- Montos rápidos -->
+                            <div class="row mt-3 g-2">
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-outline-primary w-100" onclick="$('#transfer-amount').val('10000')">
+                                        $10.000
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-outline-primary w-100" onclick="$('#transfer-amount').val('25000')">
+                                        $25.000
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-outline-primary w-100" onclick="$('#transfer-amount').val('50000')">
+                                        $50.000
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-outline-primary w-100" onclick="$('#transfer-amount').val('100000')">
+                                        $100.000
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="transfer-description" class="form-label fw-bold">
+                                Descripción (opcional)
+                            </label>
+                            <textarea class="form-control" 
+                                      id="transfer-description" 
+                                      rows="2" 
+                                      placeholder="Ej: Pago por servicios prestados"></textarea>
+                        </div>
+                        
+                        <!-- Información adicional -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="save-contact">
+                                <label class="form-check-label" for="save-contact">
+                                    Guardar como contacto
+                                </label>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="instant-transfer" checked>
+                                <label class="form-check-label" for="instant-transfer">
+                                    Transferencia instantánea (+ $500 de comisión)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Resumen -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">Resumen de la transferencia</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Monto a transferir:</span>
+                                    <span id="summary-amount">$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Comisión:</span>
+                                    <span id="summary-commission">$0</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total a descontar:</span>
+                                    <span id="summary-total">$0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de Envío -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="transfer-button">
+                                <i class="bi bi-send me-2"></i>Enviar Dinero
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Contactos Frecuentes -->
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-people me-2"></i>Contactos Frecuentes
+                    </h5>
+                    
+                    <div id="frequent-contacts">
+                        <!-- Los contactos se cargarán dinámicamente -->
+                        <div class="text-center py-4">
+                            <i class="bi bi-people display-4 text-muted"></i>
+                            <p class="mt-2 text-muted">No tienes contactos frecuentes</p>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#new-contact-modal">
+                                <i class="bi bi-plus"></i> Agregar Contacto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para nuevo contacto -->
+    <div class="modal fade" id="new-contact-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Contacto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-contact-form">
+                        <div class="mb-3">
+                            <label for="contact-name" class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control" id="contact-name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contact-email" class="form-label">Email (opcional)</label>
+                            <input type="email" class="form-control" id="contact-email">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contact-account" class="form-label">Número de cuenta</label>
+                            <input type="text" class="form-control" id="contact-account" required>
+                            <div class="form-text">Si no tienes el número, puedes dejarlo en blanco y completarlo después.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#add-contact-form').submit()">Guardar Contacto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor para el comprobante -->
+    <div id="receipt-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/transactions.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Cargar datos del usuario
+            const user = getCurrentUser();
+            if (user) {
+                $('#current-user').text(user.name);
+                $('#current-balance').text(formatCurrency(user.balance));
+                loadUserContacts();
+            }
+            
+            // Configurar autocompletado para destinatario
+            $('#recipient-name').autocomplete = function() {
+                // Esta función sería implementada con una lista de contactos
+            };
+            
+            // Actualizar resumen cuando cambia el monto
+            $('#transfer-amount').on('input', updateSummary);
+            $('#instant-transfer').on('change', updateSummary);
+            
+            // Manejar selección de contacto
+            $('#recipient-select').on('change', function() {
+                if ($(this).val() === 'new') {
+                    $('#new-contact-modal').modal('show');
+                } else if ($(this).val()) {
+                    const contactName = $(this).find('option:selected').data('name');
+                    $('#recipient-name').val(contactName || '');
+                }
+            });
+            
+            // Actualizar resumen inicial
+            updateSummary();
+            
+            // Cargar contactos frecuentes
+            loadFrequentContacts();
+        });
+        
+        // Cargar contactos del usuario
+        function loadUserContacts() {
+            const contacts = getUserContacts();
+            const select = $('#recipient-select');
+            
+            select.empty();
+            select.append('<option value="">Seleccionar contacto...</option>');
+            
+            contacts.forEach(contact => {
+                select.append(`
+                    <option value="${contact.accountNumber}" data-name="${contact.name}">
+                        ${contact.name} - ${contact.accountNumber || 'Sin número'}
+                    </option>
+                `);
+            });
+            
+            select.append('<option value="new">+ Agregar nuevo contacto</option>');
+        }
+        
+        // Cargar contactos frecuentes
+        function loadFrequentContacts() {
+            const contacts = getUserContacts();
+            const container = $('#frequent-contacts');
+            
+            if (!contacts || contacts.length === 0) {
+                return; // Mantener el mensaje por defecto
+            }
+            
+            let html = '<div class="row g-3">';
+            contacts.slice(0, 4).forEach(contact => {
+                const initials = contact.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                
+                html += `
+                    <div class="col-6 col-md-3">
+                        <div class="contact-item text-center" 
+                             onclick="selectContact('${contact.name}', '${contact.accountNumber || ''}')">
+                            <div class="contact-avatar mx-auto mb-2">${initials}</div>
+                            <h6 class="mb-1">${contact.name.split(' ')[0]}</h6>
+                            <small class="text-muted">${contact.accountNumber || 'Sin número'}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.html(html);
+        }
+        
+        // Seleccionar contacto
+        function selectContact(name, accountNumber) {
+            $('#recipient-name').val(name);
+            if (accountNumber) {
+                $('#recipient-account').val(accountNumber);
+            }
+            
+            // Marcar como seleccionado (opcional, necesitarías añadir lógica CSS)
+            $('.contact-item').removeClass('selected');
+            // Aquí necesitarías una forma de identificar el elemento específico
+        }
+        
+        // Actualizar resumen
+        function updateSummary() {
+            const amountInput = $('#transfer-amount').val();
+            const amount = parseInt(amountInput.replace(/[^\d]/g, '') || '0');
+            const instantTransfer = $('#instant-transfer').is(':checked');
+            
+            // Calcular comisión
+            let commission = 0;
+            if (instantTransfer && amount > 0) {
+                commission = 500; // $500 por transferencia instantánea
+            }
+            
+            const total = amount + commission;
+            
+            // Actualizar display
+            $('#summary-amount').text(formatCurrency(amount));
+            $('#summary-commission').text(formatCurrency(commission));
+            $('#summary-total').text(formatCurrency(total));
+            
+            // Actualizar texto del botón
+            const buttonText = instantTransfer ? 
+                `Enviar ${formatCurrency(amount)} (+ ${formatCurrency(commission)} comisión)` :
+                `Enviar ${formatCurrency(amount)}`;
+            $('#transfer-button').html(`<i class="bi bi-send me-2"></i>${buttonText}`);
+            
+            // Validar saldo suficiente
+            const user = getCurrentUser();
+            if (user && total > user.balance) {
+                $('#transfer-button').prop('disabled', true).addClass('btn-danger').removeClass('btn-primary');
+                $('#transfer-button').html(`<i class="bi bi-exclamation-triangle me-2"></i>Saldo insuficiente`);
+            } else {
+                $('#transfer-button').prop('disabled', false).removeClass('btn-danger').addClass('btn-primary');
+            }
+        }
+        
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertClass = {
+                'success': 'alert-success',
+                'danger': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            };
+            
+            const alertHtml = `
+                <div class="alert ${alertClass[type]} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#alert-container').html(alertHtml);
+            
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+        
+        // Agregar contacto desde el modal
+        $(document).ready(function() {
+            $('#add-contact-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                const contactData = {
+                    name: $('#contact-name').val().trim(),
+                    email: $('#contact-email').val().trim(),
+                    accountNumber: $('#contact-account').val().trim()
+                };
+                
+                if (!contactData.name) {
+                    showAlert('El nombre es requerido', 'danger');
+                    return;
+                }
+                
+                const success = addContact(contactData);
+                
+                if (success) {
+                    showAlert('Contacto agregado exitosamente', 'success');
+                    loadUserContacts();
+                    loadFrequentContacts();
+                    $('#new-contact-modal').modal('hide');
+                    $(this).trigger('reset');
+                    
+                    // Seleccionar el nuevo contacto
+                    $('#recipient-select').val(contactData.accountNumber || '');
+                    $('#recipient-name').val(contactData.name);
+                    if (contactData.accountNumber) {
+                        $('#recipient-account').val(contactData.accountNumber);
+                    }
+                } else {
+                    showAlert('Error al agregar contacto', 'danger');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
