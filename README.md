@@ -40,7 +40,7 @@ Saldo inicial: $250.000 CLP
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tuusuario/alke-wallet.git
+   git clone https://github.com/KPila1977/Alke-Wallet.git
    cd alke-wallet
 Abrir en el navegador
 
